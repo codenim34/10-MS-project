@@ -2,41 +2,23 @@
 
 A comprehensive Retrieval-Augmented Generation (RAG) system that processes Bengali and English queries, retrieves relevant information from PDF documents, and generates contextual answers using advanced NLP techniques.
 
-## 🎯 Project Overview
+## 🎯 Features
 
-This RAG system is designed to:
-- Process multilingual queries in Bengali and English
-- Extract and chunk text from PDF documents (optimized for Bengali content)
-- Store document embeddings in vector databases
-- Maintain conversation memory (short-term and long-term)
-- Generate contextual responses using LLM integration
-- Provide REST API for easy integration
-- Evaluate system performance with comprehensive metrics
-
-## 🏗️ System Architecture
-
-```
-┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
-│   PDF Files     │    │  Text Chunking   │    │ Vector Database │
-│   (Bengali +    │ ──▶│  (Smart Strategy)│ ──▶│ (ChromaDB/FAISS)│
-│   English)      │    │                  │    │                 │
-└─────────────────┘    └──────────────────┘    └─────────────────┘
-                                                        │
-┌─────────────────┐    ┌──────────────────┐            │
-│   User Query    │    │   RAG System     │            │
-│ (Bengali/Eng)   │ ──▶│   + Memory       │ ◄──────────┘
-│                 │    │                  │
-└─────────────────┘    └──────────────────┘
-                              │
-                              ▼
-                    ┌──────────────────┐
-                    │  LLM Response    │
-                    │ (OpenAI/Gemini)  │
-                    │                  │
-                    └──────────────────┘
-```
+- **Multilingual Support**: Process queries in both Bengali and English
+- **PDF Document Processing**: Extract and chunk text from PDF documents
+- **Vector Database**: Store document embeddings for efficient retrieval
+- **Conversation Memory**: Maintain short-term and long-term conversation history
+- **REST API**: Easy integration with web applications
+- **Comprehensive Evaluation**: Built-in performance metrics and testing
+- **Interactive CLI**: Command-line interface for easy usage
 
 ## 🚀 Quick Start
+
+### Prerequisites
+
+- Python 3.10 or higher
+- Node.js 18+ (for frontend)
+- Git
 
 ### 1. Installation
 
@@ -45,427 +27,421 @@ This RAG system is designed to:
 git clone <your-repo-url>
 cd multilingual-rag-system
 
-# Install dependencies
+# Create and activate virtual environment
+python -m venv venv
+source venv/Scripts/activate  # On Windows
+# OR
+source venv/bin/activate      # On Linux/Mac
+
+# Install Python dependencies
 pip install -r requirements.txt
 
-# Set up environment variables
-cp .env.example .env
-# Add your API keys to .env file
+# Install frontend dependencies (optional)
+cd frontend
+npm install
+cd ..
 ```
 
-### 2. Environment Configuration
+### 2. Environment Setup
 
-Create a `.env` file with your API keys:
+Create a `.env` file in the root directory:
 
 ```env
+# API Keys (Get these from OpenAI and Google)
 OPENAI_API_KEY=your_openai_api_key_here
 GOOGLE_API_KEY=your_google_api_key_here
+
+# Optional: Customize settings
+EMBEDDING_MODEL=sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2
+LLM_MODEL=gpt-3.5-turbo
 ```
 
-### 3. Add Your PDF Documents
+### 3. Add Your Documents
 
-Place your Bengali PDF files (like HSC26 Bangla 1st paper) in the `data/pdfs/` directory:
+Place your PDF files in the `data/pdfs/` directory:
 
 ```bash
-# Example structure
-data/
-├── pdfs/
-│   ├── hsc26_bangla_1st_paper.pdf
-│   └── other_bengali_books.pdf
-└── vector_db/
+# Create directory structure
+mkdir -p data/pdfs data/vector_db
+
+# Add your PDF files
+cp your_documents.pdf data/pdfs/
 ```
 
 ### 4. Setup Knowledge Base
 
 ```bash
-# Setup knowledge base from all PDFs
+# Setup knowledge base from all PDFs in data/pdfs/
 python main.py setup
 
 # Or specify specific files
-python main.py setup --pdf-files data/pdfs/hsc26_bangla_1st_paper.pdf
+python main.py setup --pdf-files data/pdfs/document1.pdf data/pdfs/document2.pdf
 ```
 
-### 5. Run Interactive Session
+### 5. Start Using the System
 
+#### Interactive Mode
 ```bash
-# Start interactive query session
 python main.py query
 ```
 
-### 6. Start REST API
-
+#### API Server
 ```bash
-# Start the API server
 python main.py api
-
-# Access API documentation at http://localhost:8000/docs
+# Access API docs at http://localhost:8000/docs
 ```
 
-## 📋 Sample Test Cases
+#### Run Tests
+```bash
+python main.py test
+```
 
-The system is tested with these sample queries:
+## 📖 Usage Guide
 
-| Query (Bengali) | Expected Answer |
-|-----------------|----------------|
-| অনুপমের ভাষায় সুপুরুষ কাকে বলা হয়েছে? | শুম্ভুনাথ |
-| কাকে অনুপমের ভাগ্য দেবতা বলে উল্লেখ করা হয়েছে? | মামাকে |
-| বিয়ের সময় কল্যাণীর প্রকৃত বয়স কত ছিল? | ১৫ বছর |
+### Command Line Interface
 
-## 🛠️ Tools and Libraries Used
+The system provides several commands for different use cases:
 
-### Core RAG Components
-- **LangChain** (0.1.0): RAG pipeline orchestration
-- **Sentence-Transformers** (2.2.2): Multilingual embeddings
-- **ChromaDB** (0.4.0): Vector database
-- **FAISS** (1.7.4): Alternative vector search
+#### 1. Setup Knowledge Base
+```bash
+# Setup from all PDFs in data/pdfs/
+python main.py setup
 
-### PDF Processing
-- **PyPDF2** (3.0.1): Basic PDF text extraction
-- **PyMuPDF** (1.23.0): Advanced PDF processing
-- **pdfplumber** (0.10.0): Table and layout-aware extraction
+# Setup from specific files
+python main.py setup --pdf-files path/to/file1.pdf path/to/file2.pdf
+```
 
-### Language Processing
-- **Transformers** (4.36.0): Hugging Face models
-- **bengali-stemmer** (1.0.0): Bengali language support
-- **indic-nlp-library** (0.81): Indic language processing
+#### 2. Interactive Query Session
+```bash
+python main.py query
+```
+This starts an interactive session where you can:
+- Ask questions in Bengali or English
+- Type `stats` to see system statistics
+- Type `clear` to clear conversation history
+- Type `quit` to exit
 
-### API and Web Framework
-- **FastAPI** (0.104.0): REST API framework
-- **Uvicorn** (0.24.0): ASGI server
+#### 3. Run Test Queries
+```bash
+python main.py test
+```
+Runs predefined test cases to verify system functionality.
 
-### Evaluation Metrics
-- **scikit-learn** (1.3.0): Similarity metrics
-- **rouge-score** (0.1.2): ROUGE evaluation
-- **bert-score** (0.3.13): Semantic evaluation
+#### 4. Start API Server
+```bash
+python main.py api
+```
+Starts the REST API server on `http://localhost:8000`
 
-### LLM Integration
-- **OpenAI API**: GPT models for response generation
-- **Google Gemini**: Alternative LLM provider
+#### 5. Check System Status
+```bash
+python main.py status
+```
+Shows current system configuration and statistics.
 
-## 📖 API Documentation
+#### 6. Run Evaluation
+```bash
+# Run evaluation with default test cases
+python main.py evaluate
 
-### Core Endpoints
+# Save evaluation report to file
+python main.py evaluate --output evaluation_report.json
+```
 
-#### 1. Query Endpoint
-```http
-POST /query
-Content-Type: application/json
+### REST API Usage
 
-{
+Once the API server is running, you can use these endpoints:
+
+#### Query Endpoint
+```bash
+curl -X POST "http://localhost:8000/query" \
+  -H "Content-Type: application/json" \
+  -d '{
     "query": "অনুপমের ভাষায় সুপুরুষ কাকে বলা হয়েছে?",
     "include_context": true,
     "top_k": 5
-}
+  }'
 ```
 
-**Response:**
-```json
-{
-    "query": "অনুপমের ভাষায় সুপুরুষ কাকে বলা হয়েছে?",
-    "response": "অনুপমের ভাষায় সুপুরুষ বলতে শুম্ভুনাথকে বোঝানো হয়েছে।",
-    "language": "bengali",
-    "retrieved_chunks": [...],
-    "conversation_context": "...",
-    "metadata": {
-        "chunks_found": 3,
-        "type": "rag_response",
-        "avg_similarity": 0.85
-    },
-    "timestamp": "2024-01-20T10:30:00"
-}
+#### Upload PDF
+```bash
+curl -X POST "http://localhost:8000/upload-pdf" \
+  -F "file=@your_document.pdf"
 ```
 
-#### 2. Setup Endpoint
-```http
-POST /setup
+#### Get Statistics
+```bash
+curl "http://localhost:8000/stats"
 ```
 
-#### 3. Statistics Endpoint
-```http
-GET /stats
-```
+### Frontend Usage (Optional)
 
-#### 4. Upload PDF Endpoint
-```http
-POST /upload-pdf
-Content-Type: multipart/form-data
-```
-
-### Complete API Documentation
-Visit `http://localhost:8000/docs` when the API server is running for interactive documentation.
-
-## 📊 Evaluation Matrix
-
-### Evaluation Metrics
-
-1. **Groundedness**: Is the answer supported by retrieved context?
-2. **Relevance**: Does the system fetch the most appropriate documents?
-3. **Answer Quality**: Multiple metrics including:
-   - Exact Match
-   - Semantic Similarity
-   - ROUGE Scores (ROUGE-1, ROUGE-2, ROUGE-L)
-   - BLEU Score
-   - Substring Match
-
-### Running Evaluation
+If you want to use the web interface:
 
 ```bash
-# Run comprehensive evaluation
-python main.py evaluate
+# Start the frontend development server
+cd frontend
+npm run dev
 
-# Save evaluation report to specific file
-python main.py evaluate --output my_evaluation.json
+# Build for production
+npm run build
+npm start
 ```
 
-### Sample Evaluation Results
+## 🔧 Configuration
 
-```json
-{
-    "aggregate_metrics": {
-        "semantic_similarity_mean": 0.82,
-        "groundedness_mean": 0.78,
-        "relevance_mean": 0.85,
-        "exact_match_mean": 0.60,
-        "rouge1_mean": 0.75
-    },
-    "evaluation_summary": {
-        "total_queries": 5,
-        "language_distribution": {
-            "bengali": 3,
-            "english": 2
-        },
-        "overall_performance": {
-            "semantic_similarity": {
-                "mean": 0.82,
-                "median": 0.80,
-                "std": 0.12
-            }
-        }
-    }
-}
+### Environment Variables
+
+Create a `.env` file with these settings:
+
+```env
+# Required API Keys
+OPENAI_API_KEY=your_openai_api_key
+GOOGLE_API_KEY=your_google_api_key
+
+# Optional: Customize Models
+EMBEDDING_MODEL=sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2
+LLM_MODEL=gpt-3.5-turbo
+
+# Optional: Database Settings
+VECTOR_DB_PATH=data/vector_db
+PDF_PATH=data/pdfs
+
+# Optional: Chunking Parameters
+CHUNK_SIZE=500
+CHUNK_OVERLAP=50
+
+# Optional: Retrieval Settings
+TOP_K_CHUNKS=5
+SIMILARITY_THRESHOLD=0.7
+
+# Optional: API Settings
+API_HOST=0.0.0.0
+API_PORT=8000
+
+# Optional: Memory Settings
+MAX_CONVERSATION_HISTORY=10
 ```
 
-## 🔧 Technical Implementation Details
+### Configuration File
 
-### 1. PDF Text Extraction
-
-**Method**: Hybrid approach using multiple libraries
-**Why**: Different PDF structures require different extraction methods
+You can also modify `config.py` to change default settings:
 
 ```python
-# Tries multiple methods and selects the best result
-methods = [
-    ("PyMuPDF", self.extract_text_pymupdf),      # Best for complex layouts
-    ("pdfplumber", self.extract_text_pdfplumber), # Best for tables
-    ("PyPDF2", self.extract_text_pypdf2)         # Basic extraction
-]
+# Example: Change chunk size
+CHUNK_SIZE = 300  # Smaller chunks for more precise retrieval
+
+# Example: Change similarity threshold
+SIMILARITY_THRESHOLD = 0.8  # Higher threshold for more relevant results
 ```
 
-**Challenges Faced**:
-- Bengali font encoding issues
-- Complex PDF layouts
-- OCR artifacts in scanned documents
+## 📊 Sample Queries
 
-**Solutions**:
-- Multi-method extraction with scoring
-- Bengali Unicode pattern matching
-- Post-processing cleanup for common OCR errors
-
-### 2. Text Chunking Strategy
-
-**Strategy**: Smart chunking with multiple approaches
-**Why**: Balances semantic coherence with retrieval efficiency
-
-**Methods Implemented**:
-- **Sentence-based**: Preserves semantic boundaries
-- **Paragraph-based**: Maintains logical structure
-- **Fixed-size**: Consistent chunk sizes with overlap
-- **Smart chunking**: Adaptive based on document characteristics
-
-```python
-# Smart chunking decision logic
-if analysis["avg_paragraph_length"] > self.chunk_size * 1.5:
-    return self.chunk_by_sentences(text, source)
-elif analysis["paragraph_count"] > 10 and analysis["avg_paragraph_length"] < self.chunk_size * 0.5:
-    return self.chunk_by_paragraphs(text, source)
+### Bengali Queries
+```
+অনুপমের ভাষায় সুপুরুষ কাকে বলা হয়েছে?
+কাকে অনুপমের ভাগ্য দেবতা বলে উল্লেখ করা হয়েছে?
+বিয়ের সময় কল্যাণীর প্রকৃত বয়স কত ছিল?
 ```
 
-### 3. Embedding Model
-
-**Model**: `paraphrase-multilingual-MiniLM-L12-v2`
-**Why Chosen**:
-- Supports 50+ languages including Bengali
-- Good balance of quality and speed
-- Optimized for semantic similarity tasks
-
-**How it captures meaning**:
-- Transformer-based architecture
-- Cross-lingual training on parallel sentences
-- Contextual embeddings that understand word relationships
-
-### 4. Similarity Search and Storage
-
-**Method**: Vector similarity using cosine distance
-**Storage**: ChromaDB with SQLite backend
-**Why This Setup**:
-- Efficient for semantic search
-- Persistent storage
-- Scalable architecture
-
-**Query-Chunk Comparison**:
-```python
-# Both query and chunks are embedded in the same vector space
-query_embedding = model.encode([query])
-chunk_embeddings = model.encode([chunk.text for chunk in chunks])
-
-# Cosine similarity for relevance scoring
-similarities = cosine_similarity(query_embedding, chunk_embeddings)
+### English Queries
+```
+What is the main theme of the story?
+Who is the protagonist in this narrative?
+What are the social issues discussed?
 ```
 
-**Handling Vague/Missing Context**:
-- Similarity threshold filtering
-- Fallback responses for low-confidence results
-- Context-aware prompt engineering
+## 🧪 Testing
 
-### 5. Memory Management
-
-**Short-term Memory**: Recent conversation in RAM (configurable limit)
-**Long-term Memory**: SQLite database with conversation history
-
-**Implementation**:
-```python
-class ConversationMemory:
-    def __init__(self, max_short_term=10):
-        self.short_term_memory = deque(maxlen=max_short_term)  # Recent context
-        self.conn = sqlite3.connect("conversation_history.db")  # Persistent storage
+### Run Unit Tests
+```bash
+pytest tests/
 ```
 
-## 🎯 Performance Optimization
-
-### Current Results Quality
-Based on testing with Bengali literature content:
-
-- **Relevance**: 85% average similarity for correct retrievals
-- **Groundedness**: 78% answers supported by context
-- **Language Detection**: 95% accuracy for Bengali/English classification
-- **Response Time**: ~2-3 seconds per query (including LLM call)
-
-### Potential Improvements
-
-1. **Better Chunking**:
-   - Domain-specific chunking for literature
-   - Context-aware boundary detection
-   - Hierarchical chunking for long documents
-
-2. **Enhanced Embedding**:
-   - Fine-tuned models on Bengali literature
-   - Domain-specific embeddings
-   - Multi-modal embeddings for figures/tables
-
-3. **Larger Document Corpus**:
-   - More diverse Bengali literature
-   - Multi-domain knowledge base
-   - Cross-reference validation
-
-## 🔄 Conversation Flow
-
+### Run Integration Tests
+```bash
+python main.py test
 ```
-User Query → Language Detection → Query Embedding → 
-Similarity Search → Context Retrieval → LLM Prompt → 
-Response Generation → Memory Storage → Return Response
+
+### Run Evaluation
+```bash
+python main.py evaluate --output results.json
 ```
+
+### Demo Script
+```bash
+python demo.py
+```
+
+## 🚨 Troubleshooting
+
+### Common Issues
+
+#### 1. Import Errors
+```bash
+# If you get import errors, make sure you're in the virtual environment
+source venv/Scripts/activate  # Windows
+# OR
+source venv/bin/activate      # Linux/Mac
+
+# Reinstall dependencies
+pip install -r requirements.txt
+```
+
+#### 2. API Key Issues
+```bash
+# Make sure your .env file exists and has valid API keys
+cat .env
+# Should show your API keys
+
+# Test API connection
+python -c "import openai; openai.api_key='your_key'; print('Valid key')"
+```
+
+#### 3. PDF Processing Issues
+```bash
+# Check if PDF files are readable
+python -c "import PyPDF2; print('PyPDF2 works')"
+
+# Try different PDF files if one fails
+python main.py setup --pdf-files different_file.pdf
+```
+
+#### 4. Memory Issues
+```bash
+# Reduce chunk size for large documents
+# Edit config.py: CHUNK_SIZE = 300
+
+# Clear vector database and restart
+rm -rf data/vector_db/*
+python main.py setup
+```
+
+#### 5. Performance Issues
+```bash
+# Use smaller embedding model
+# Edit config.py: EMBEDDING_MODEL = "sentence-transformers/paraphrase-multilingual-MiniLM-L6-v2"
+
+# Reduce top_k for faster retrieval
+# Edit config.py: TOP_K_CHUNKS = 3
+```
+
+### Getting Help
+
+1. **Check the logs**: Look for error messages in the terminal
+2. **Verify setup**: Run `python main.py status` to check system health
+3. **Test components**: Use `python main.py test` to verify functionality
+4. **Check API docs**: Visit `http://localhost:8000/docs` when API is running
 
 ## 📁 Project Structure
 
 ```
 multilingual-rag-system/
-├── src/
-│   ├── pdf_processor.py      # PDF text extraction
-│   ├── text_chunker.py       # Document chunking strategies
-│   ├── vector_database.py    # Embedding storage and search
+├── src/                    # Core source code
+│   ├── pdf_processor.py    # PDF text extraction
+│   ├── text_chunker.py     # Document chunking
+│   ├── vector_database.py  # Vector storage & search
 │   ├── conversation_memory.py # Memory management
-│   ├── multilingual_rag.py   # Main RAG system
-│   ├── api.py               # REST API endpoints
-│   └── evaluation.py        # System evaluation
-├── data/
-│   ├── pdfs/               # Source PDF documents
-│   ├── vector_db/          # Vector database storage
-│   └── conversations/      # Exported conversations
-├── tests/
-│   └── test_*.py          # Unit tests
-├── config.py              # Configuration settings
-├── main.py               # CLI application
-├── requirements.txt      # Python dependencies
-└── README.md            # This file
+│   ├── multilingual_rag.py # Main RAG system
+│   ├── api.py             # REST API
+│   └── evaluation.py      # Evaluation metrics
+├── data/                  # Data storage
+│   ├── pdfs/             # Source PDF documents
+│   ├── vector_db/        # Vector database
+│   └── conversations/    # Conversation history
+├── frontend/             # Web interface (optional)
+│   ├── src/
+│   ├── package.json
+│   └── ...
+├── tests/                # Test files
+├── config.py             # Configuration
+├── main.py              # CLI interface
+├── demo.py              # Demo script
+├── requirements.txt     # Python dependencies
+└── README.md           # This file
 ```
 
-## 🧪 Testing
+## 🔄 Development Workflow
 
-### Unit Tests
+### 1. Setup Development Environment
 ```bash
-# Run all tests
+# Clone and setup
+git clone <repo-url>
+cd multilingual-rag-system
+python -m venv venv
+source venv/Scripts/activate
+pip install -r requirements.txt
+
+# Install development dependencies
+pip install black flake8 pytest
+```
+
+### 2. Code Quality
+```bash
+# Format code
+black src/ tests/
+
+# Lint code
+flake8 src/ tests/
+
+# Run tests
 pytest tests/
-
-# Run specific test
-pytest tests/test_pdf_processor.py
 ```
 
-### Integration Tests
+### 3. Testing New Features
 ```bash
-# Test full pipeline
-python main.py test
-```
+# Test with sample data
+python demo.py
 
-### API Testing
-```bash
 # Test API endpoints
-curl -X POST "http://localhost:8000/query" \
-  -H "Content-Type: application/json" \
-  -d '{"query": "অনুপমের ভাষায় সুপুরুষ কাকে বলা হয়েছে?"}'
-```
-
-## 🚀 Deployment
-
-### Local Development
-```bash
 python main.py api
+# Then visit http://localhost:8000/docs
 ```
 
-### Production Deployment
-```bash
-# Using Gunicorn
-gunicorn -w 4 -k uvicorn.workers.UvicornWorker src.api:app
+## 📈 Performance Tips
 
-# Using Docker (Dockerfile included)
-docker build -t multilingual-rag .
-docker run -p 8000:8000 multilingual-rag
-```
+### For Better Results
+
+1. **Quality PDFs**: Use high-quality, text-based PDFs rather than scanned images
+2. **Relevant Content**: Ensure your PDFs contain relevant information for your queries
+3. **Appropriate Chunk Size**: Adjust `CHUNK_SIZE` based on your document structure
+4. **Similarity Threshold**: Tune `SIMILARITY_THRESHOLD` for your use case
+
+### For Better Performance
+
+1. **Smaller Models**: Use smaller embedding models for faster processing
+2. **Reduce Chunks**: Lower `TOP_K_CHUNKS` for faster retrieval
+3. **Cache Results**: The system automatically caches embeddings
+4. **Batch Processing**: Process multiple documents at once
 
 ## 🤝 Contributing
 
 1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/new-feature`)
-3. Commit your changes (`git commit -am 'Add new feature'`)
-4. Push to the branch (`git push origin feature/new-feature`)
-5. Create a Pull Request
+2. Create a feature branch: `git checkout -b feature/new-feature`
+3. Make your changes and add tests
+4. Run tests: `pytest tests/`
+5. Format code: `black src/ tests/`
+6. Commit: `git commit -am 'Add new feature'`
+7. Push: `git push origin feature/new-feature`
+8. Create a Pull Request
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+This project is licensed under the MIT License.
 
 ## 🙏 Acknowledgments
 
-- HSC Bangla textbook contributors for the knowledge base
-- Sentence-Transformers team for multilingual embeddings
-- FastAPI and LangChain communities for excellent frameworks
-- Bengali NLP community for language processing tools
+- Sentence-Transformers for multilingual embeddings
+- FastAPI for the excellent web framework
+- LangChain for RAG pipeline components
+- Bengali NLP community for language support
 
 ## 📞 Support
 
-For questions or issues:
-- Create an issue in the GitHub repository
-- Check the API documentation at `/docs`
-- Review the evaluation reports for system performance
+- **Issues**: Create an issue in the GitHub repository
+- **Documentation**: Check `/docs` when API is running
+- **Examples**: See `demo.py` for usage examples
+- **Testing**: Use `python main.py test` for system verification
 
 ---
 
