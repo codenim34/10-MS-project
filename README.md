@@ -17,7 +17,6 @@ A comprehensive Retrieval-Augmented Generation (RAG) system that processes Benga
 ### Prerequisites
 
 - Python 3.10 or higher
-- Node.js 18+ (for frontend)
 - Git
 
 ### 1. Installation
@@ -35,11 +34,6 @@ source venv/bin/activate      # On Linux/Mac
 
 # Install Python dependencies
 pip install -r requirements.txt
-
-# Install frontend dependencies (optional)
-cd frontend
-npm install
-cd ..
 ```
 
 ### 2. Environment Setup
@@ -172,20 +166,6 @@ curl -X POST "http://localhost:8000/upload-pdf" \
 #### Get Statistics
 ```bash
 curl "http://localhost:8000/stats"
-```
-
-### Frontend Usage (Optional)
-
-If you want to use the web interface:
-
-```bash
-# Start the frontend development server
-cd frontend
-npm run dev
-
-# Build for production
-npm run build
-npm start
 ```
 
 ## 🔧 Configuration
@@ -349,10 +329,6 @@ multilingual-rag-system/
 │   ├── pdfs/             # Source PDF documents
 │   ├── vector_db/        # Vector database
 │   └── conversations/    # Conversation history
-├── frontend/             # Web interface (optional)
-│   ├── src/
-│   ├── package.json
-│   └── ...
 ├── tests/                # Test files
 ├── config.py             # Configuration
 ├── main.py              # CLI interface
